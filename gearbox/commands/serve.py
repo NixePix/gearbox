@@ -996,10 +996,14 @@ def cherrypy_server_runner(
             kwargs[var_name] = int(var)
 
     from cherrypy import wsgiserver
+    from cherrypy.wsgiserver.ssl_builtin import BuiltinSSLAdapter
 
     server = wsgiserver.CherryPyWSGIServer(bind_addr, app,
         server_name=server_name, **kwargs)
     server.ssl_certificate = server.ssl_private_key = ssl_pem
+    if is_ssl:
+        server.ssl_adapter = BuiltinSSLAdapter(server.ssl_certificate, server.ssl_private_key)
+
     if protocol_version:
         server.protocol = protocol_version
 
